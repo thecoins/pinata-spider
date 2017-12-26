@@ -3,7 +3,9 @@ import bs4
 
 from peewee import *
 
-db = SqliteDatabase('./exchange.db')
+#db = SqliteDatabase('./exchange.db')
+
+db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', database = 'exchange')
 
 class Exchange(Model):
     name = CharField()
@@ -15,7 +17,7 @@ class Exchange(Model):
 
 db.connect()
 
-db.drop_tables([Exchange])
+#db.drop_tables([Exchange])
 
 db.create_tables([Exchange])
 
