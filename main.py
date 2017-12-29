@@ -12,7 +12,7 @@ class Exchange(Model):
     rank = IntegerField()
     name = CharField()
     volume = CharField()      
-    url = CharField()
+    # url = CharField()
     timestamp = DateTimeField(default=datetime.datetime.now)
 
 
@@ -41,17 +41,16 @@ for index,item in enumerate(html):
 
     subsoup = bs4.BeautifulSoup(subpage.text,"html.parser")
 
-    name = subsoup.select('.text-large')
-    volume = subsoup.select('.text-large2')
-    url = subsoup.select('.list-unstyled a')
+    nameobj = subsoup.select('.text-large')
+    volumeobj = subsoup.select('.text-large2')
+    # urlobj = subsoup.select('.list-unstyled a')
 
-    print index + 1
-    print name[0].text
-    print volume[0].text
-    print url[0].text
+    name = nameobj[0].text.strip()
+    print name
+    volume =  volumeobj[0].text
+    # url = urlobj[0].text
 
-
-    exchange = Exchange(rank=index+1,name=name[0].text,volume=volume[0].text,url=url[0].text)
+    exchange = Exchange(rank=index+1,name=name,volume=volume)
     exchange.save()
 
 db.close()
