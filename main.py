@@ -19,11 +19,22 @@ class Exchange(Model):
     class Meta:
         database = db
 
+class Exchangelog(Model):
+    start = DateTimeField()
+    end = DateTimeField(default=datetime.datetime.now)
+
+    class Meta:
+        database = db
+
 db.connect()
 
-db.drop_tables([Exchange])
+# db.drop_tables([Exchange])
 
-db.create_tables([Exchange])
+# if not Exchange.table_exists():
+#   db.create_tables([Exchange])
+
+if not Exchangelog.table_exists():
+  db.create_tables([Exchangelog])
 
 response = requests.get('https://coinmarketcap.com/exchanges/volume/24-hour/')
 
@@ -32,6 +43,8 @@ response = requests.get('https://coinmarketcap.com/exchanges/volume/24-hour/')
 soup = bs4.BeautifulSoup(response.text,"html.parser")
 
 html = soup.select('.volume-header a')
+
+start = datetime.datetime.now()
 
 for index,item in enumerate(html):
 
@@ -52,6 +65,9 @@ for index,item in enumerate(html):
 
     exchange = Exchange(rank=index+1,name=name,volume=volume)
     exchange.save()
+
+exchangelog = Exchangelog(start=start) 
+exchangelog.save()   
 
 db.close()
 
