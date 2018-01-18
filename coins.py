@@ -37,6 +37,21 @@ class Coinlog(Model):
     class Meta:
         database = db
 
+class Global(Model):
+    total_market_cap_usd = FloatField()
+    total_24h_volume_usd = FloatField()
+    bitcoin_percentage_of_market_cap = FloatField()
+    active_currencies = IntegerField()
+    active_assets = IntegerField()
+    active_markets = IntegerField()
+    last_updated = IntegerField()
+    total_market_cap_cny = FloatField()
+    total_24h_volume_cny = FloatField()
+    timestamp = DateTimeField(default=datetime.datetime.now)
+
+    class Meta:
+        database = db        
+
 db.connect()
 
 if not Coin.table_exists():
@@ -44,6 +59,9 @@ if not Coin.table_exists():
 
 if not Coinlog.table_exists():
   db.create_tables([Coinlog])  
+
+if not Global.table_exists():
+  db.create_tables([Global])    
 
 response = requests.get('https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=1500')
 
@@ -80,6 +98,23 @@ for index,item in enumerate(ticker):
 
 coinlog = Coinlog(start=start) 
 coinlog.save()   
+
+response_global = requests.get('https://api.coinmarketcap.com/v1/global/?convert=CNY')
+
+globaljson = json.loads(response_global.text)
+
+globaldata = Global(
+    total_market_cap_usd = globaljson['total_market_cap_usd'],
+    total_24h_volume_usd = globaljson['total_24h_volume_usd'],
+    bitcoin_percentage_of_market_cap = globaljson['bitcoin_percentage_of_market_cap'],
+    active_currencies = globaljson['active_currencies'],
+    active_assets = globaljson['active_assets'],
+    active_markets = globaljson['active_markets'],
+    last_updated = globaljson['last_updated'],
+    total_market_cap_cny = globaljson['total_market_cap_cny'],
+    total_24h_volume_cny = globaljson['total_24h_volume_cny'],
+) 
+globaldata.save()   
 
 db.close()
 
