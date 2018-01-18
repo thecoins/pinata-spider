@@ -6,7 +6,7 @@ from peewee import *
 
 #db = SqliteDatabase('./exchange.db')
 
-db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', database = 'exchange')
+db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', database = 'coinmarketcap')
 
 class Exchange(Model):
     rank = IntegerField()
@@ -30,8 +30,8 @@ db.connect()
 
 # db.drop_tables([Exchange])
 
-# if not Exchange.table_exists():
-#   db.create_tables([Exchange])
+if not Exchange.table_exists():
+  db.create_tables([Exchange])
 
 if not Exchangelog.table_exists():
   db.create_tables([Exchangelog])
