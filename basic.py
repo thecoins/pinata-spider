@@ -9,9 +9,13 @@ from peewee import *
 db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', database = 'coinmarketcap')
 
 class Exchangebasic(Model):
+    rank = IntegerField()
     name = CharField()
+    volume = CharField()  
     url = CharField()
     twitter = CharField()
+    timestamp = DateTimeField(default=datetime.datetime.now)
+
     class Meta:
         database = db
 
@@ -36,16 +40,18 @@ for index,item in enumerate(html):
 
     nameobj = subsoup.select('.text-large')
     urlobj = subsoup.select('.list-unstyled a')
+    volumeobj = subsoup.select('.text-large2')
 
     name = nameobj[0].text.strip()
     print name
     url = urlobj[0].text
+    volume =  volumeobj[0].text
     twitter = ''
     if (len(urlobj) > 1):
       twitter = urlobj[1].attrs['href']
     print twitter
 
-    exchangebasic = Exchangebasic(name=name,url=url,twitter=twitter)
+    exchangebasic = Exchangebasic(rank=index+1,name=name,volume=volume,url=url,twitter=twitter)
     exchangebasic.save()
 
 db.close()
