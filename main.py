@@ -81,7 +81,7 @@ for index,item in enumerate(html):
       twitter = urlobj[1].attrs['href']
 
     query = (Exchangebasic
-             .update(volume=volume,timestamp=updatedAt)
+             .update(rank=index+1,volume=volume,timestamp=updatedAt)
              .where(Exchangebasic.name == name))
     rows =  query.execute()    
     if rows == 0:
