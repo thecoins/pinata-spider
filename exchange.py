@@ -30,6 +30,8 @@ prevItem = []
 prevName = ''
 prevVolume = ''
 
+rank = 1
+
 for index,item in enumerate(tr):
 
     if (index ==0):
@@ -39,7 +41,9 @@ for index,item in enumerate(tr):
         volumeTag = prevItem.select('.volume')[0]
         prevVolume = volumeTag.attrs['data-usd']
 
-        exchangedb = Exchange(rank=index+1,name=prevName,volume=prevVolume)
+        rank = rank + 1
+
+        exchangedb = Exchange(rank=rank,name=prevName,volume=prevVolume)
         exchangedb.save()
 
         prevName = item.attrs['id']
