@@ -30,7 +30,7 @@ prevItem = []
 prevName = ''
 prevVolume = ''
 
-rank = 1
+rank = 0
 
 for index,item in enumerate(tr):
 
