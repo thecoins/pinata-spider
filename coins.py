@@ -6,30 +6,6 @@ from peewee import *
 
 db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', database = 'coinmarketcap')
 
-class Coinbasic(Model):
-    coin_id = CharField()
-    name = CharField()
-    symbol = CharField()
-    rank = IntegerField()
-    price_usd = FloatField(null=True)
-    price_btc = FloatField(null=True)
-    volume_24h_usd = FloatField(null=True)
-    market_cap_usd = FloatField(null=True)
-    available_supply = FloatField(null=True)
-    total_supply = FloatField(null=True)
-    max_supply = FloatField(null=True)
-    percent_change_1h = FloatField(null=True)
-    percent_change_24h = FloatField(null=True)
-    percent_change_7d = FloatField(null=True)
-    last_updated =  IntegerField(null=True)
-    price_cny = FloatField(null=True)
-    volume_24h_cny = FloatField(null=True)
-    market_cap_cny = FloatField(null=True)
-    timestamp = DateTimeField(default=datetime.datetime.now)
-
-    class Meta:
-        database = db   
-
 class Coin(Model):
     coin_id = CharField()
     name = CharField()
@@ -54,13 +30,6 @@ class Coin(Model):
     class Meta:
         database = db
 
-class Coinlog(Model):
-    start = DateTimeField()
-    end = DateTimeField(default=datetime.datetime.now)
-
-    class Meta:
-        database = db
-
 class Global(Model):
     total_market_cap_usd = FloatField()
     total_24h_volume_usd = FloatField()
@@ -81,15 +50,10 @@ db.connect()
 if not Coin.table_exists():
   db.create_tables([Coin])
 
-if not Coinlog.table_exists():
-  db.create_tables([Coinlog])  
-
 if not Global.table_exists():
   db.create_tables([Global])    
 
-response = requests.get('https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=1500')
-
-start = datetime.datetime.now()
+response = requests.get('https://api.coinmarketcap.com/v1/ticker/?convert=CNY&limit=2000')
 
 ticker = json.loads(response.text)
 # print ticker
@@ -97,7 +61,6 @@ print type(ticker)
 for index,item in enumerate(ticker):
     # print index
     # print item['id']
-    updatedAt = datetime.datetime.now()
 
     coin_id = item['id']
     name = item['name']
@@ -138,27 +101,7 @@ for index,item in enumerate(ticker):
     volume_24h_cny = volume_24h_cny,
     market_cap_cny = market_cap_cny)
 
-    query = (Coinbasic
-             .update(rank = rank,price_usd = price_usd,price_btc = price_btc,volume_24h_usd = volume_24h_usd,
-                     market_cap_usd = market_cap_usd,available_supply = available_supply,total_supply = total_supply,
-                     max_supply = max_supply,percent_change_1h = percent_change_1h,percent_change_24h = percent_change_24h,
-                     percent_change_7d = percent_change_7d,last_updated =  last_updated,price_cny = price_cny,
-                     volume_24h_cny = volume_24h_cny,market_cap_cny = market_cap_cny,timestamp = updatedAt)
-             .where(Coinbasic.name == name))
-    rows =  query.execute()    
-    if rows == 0:
-        print 'new Coin: ' + name
-        coinbasic = Coinbasic(coin_id = coin_id,name = name,symbol = symbol,rank = rank,price_usd = price_usd,price_btc = price_btc,volume_24h_usd = volume_24h_usd,
-                     market_cap_usd = market_cap_usd,available_supply = available_supply,total_supply = total_supply,
-                     max_supply = max_supply,percent_change_1h = percent_change_1h,percent_change_24h = percent_change_24h,
-                     percent_change_7d = percent_change_7d,last_updated =  last_updated,price_cny = price_cny,
-                     volume_24h_cny = volume_24h_cny,market_cap_cny = market_cap_cny)
-        coinbasic.save() 
-
-    coin.save()
-
-coinlog = Coinlog(start=start) 
-coinlog.save()   
+    coin.save() 
 
 response_global = requests.get('https://api.coinmarketcap.com/v1/global/?convert=CNY')
 
