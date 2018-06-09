@@ -66,10 +66,31 @@ for index,item in enumerate(html):
         if re.match(r"Blog", text):
             blog = href  
         if re.match(r"@", text):
-            twitter = href            
+            twitter = href   
+
+    updatedAt = datetime.datetime.now()
+
+    query = (ExchangeInfo
+             .update(rank=index+1,timestamp=updatedAt,alive=True)
+             .where(ExchangeInfo.name == name))
+    rows =  query.execute()    
+    if rows == 0:
+        print 'new Exchange: ' + name     
+        exchangeinfo = ExchangeInfo(rank=index+1,name=name,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
+        exchangeinfo.save()   
+
+
+thistime = datetime.datetime.now()
+yesterday = thistime - datetime.timedelta(days=1)
+yesterdayLast = yesterday.replace(hour=0,minute=0,second=0,microsecond=0)
+
+query = (ExchangeInfo
+            .update(rank=-1,alive=False)
+            .where(ExchangeInfo.timestamp < yesterdayLast))
+rows =  query.execute()    
+print rows        
     
-    exchangeinfo = ExchangeInfo(rank=index+1,name=name,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
-    exchangeinfo.save()
+    
 
 db.close()
 
