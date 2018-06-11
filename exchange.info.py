@@ -46,6 +46,9 @@ for index,item in enumerate(html):
     name = nameobj[0].text.strip()
     print name
 
+    if name == 'Gate.io':
+        name = 'Gate-io'
+
     urlobj = subsoup.select('.col-xs-12 .list-unstyled a')
 
     fees = ''
