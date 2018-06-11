@@ -28,7 +28,7 @@ db.connect()
 if not ExchangeInfo.table_exists():
   db.create_tables([ExchangeInfo])
 
-response = requests.get('https://coinmarketcap.com/exchanges/volume/24-hour/')
+response = requests.get('https://coinmarketcap.com/exchanges/volume/24-hour/all/')
 
 soup = bs4.BeautifulSoup(response.text,"html.parser")
 
@@ -44,6 +44,7 @@ for index,item in enumerate(html):
 
     nameobj = subsoup.select('.text-large')
     name = nameobj[0].text.strip()
+    print name
 
     urlobj = subsoup.select('.col-xs-12 .list-unstyled a')
 
