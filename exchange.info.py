@@ -48,6 +48,8 @@ for index,item in enumerate(html):
 
     if name == 'Gate.io':
         name = 'Gate-io'
+    elif name == 'ZB.COM':
+        name = 'ZB-COM'    
 
     urlobj = subsoup.select('.col-xs-12 .list-unstyled a')
 
