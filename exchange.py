@@ -40,7 +40,9 @@ for index,item in enumerate(tr):
     if (item.has_attr('id') and index > 0):
         volumeTag = prevItem.select('.volume')[0]
         prevVolume = volumeTag.attrs['data-usd']
-
+        
+        if prevVolume == '?':
+            prevVolume = '0'
         rank = rank + 1
 
         exchangedb = Exchange(rank=rank,name=prevName,volume=prevVolume)
