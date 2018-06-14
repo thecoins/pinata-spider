@@ -35,13 +35,14 @@ soup = bs4.BeautifulSoup(response.text,"html.parser")
 
 # html = soup.select('.volume-header a')
 tr = soup.select('.table tr')
-
+rank = 0
 # for index,item in enumerate(html):
 for index,item in enumerate(tr):
 
     if (item.has_attr('id')):
         nick = item.attrs['id']
         print nick
+        rank = rank + 1
 
         link = "https://coinmarketcap.com/exchanges/" + nick
         time.sleep(3)
@@ -79,7 +80,7 @@ for index,item in enumerate(tr):
         updatedAt = datetime.datetime.now()
 
         query = (ExchangeInfo
-                .update(rank=index+1,timestamp=updatedAt,alive=True)
+                .update(rank=rank,timestamp=updatedAt,alive=True)
                 .where(ExchangeInfo.name == name))
         rows =  query.execute()    
         if rows == 0:
