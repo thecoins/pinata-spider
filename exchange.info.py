@@ -12,6 +12,7 @@ db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', databas
 class ExchangeInfo(Model):
     rank = IntegerField()
     name = CharField()
+    nick = CharField()
     url = CharField()
     fees = CharField()
     chat = CharField()
@@ -32,58 +33,59 @@ response = requests.get('https://coinmarketcap.com/exchanges/volume/24-hour/all/
 
 soup = bs4.BeautifulSoup(response.text,"html.parser")
 
-html = soup.select('.volume-header a')
+# html = soup.select('.volume-header a')
+tr = soup.select('.table tr')
 
-for index,item in enumerate(html):
+# for index,item in enumerate(html):
+for index,item in enumerate(tr):
 
-    link = "https://coinmarketcap.com" + item.attrs['href']
-    time.sleep(3)
-    subpage = requests.get(link)
+    if (item.has_attr('id')):
+        nick = item.attrs['id']
+        print nick
 
-    subsoup = bs4.BeautifulSoup(subpage.text,"html.parser")
+        link = "https://coinmarketcap.com/exchanges/" + nick
+        time.sleep(3)
+        subpage = requests.get(link)
 
-    nameobj = subsoup.select('.text-large')
-    name = nameobj[0].text.strip()
-    print name
+        subsoup = bs4.BeautifulSoup(subpage.text,"html.parser")
 
-    if name == 'Gate.io':
-        name = 'Gate-io'
-    elif name == 'ZB.COM':
-        name = 'ZB-COM'    
+        nameobj = subsoup.select('.logo-32x32')
+        name = nameobj[0].attrs['alt']
+        print name              
 
-    urlobj = subsoup.select('.col-xs-12 .list-unstyled a')
+        urlobj = subsoup.select('.col-xs-12 .list-unstyled a')
 
-    fees = ''
-    chat = ''
-    blog = ''
-    url = ''
-    twitter = ''
+        fees = ''
+        chat = ''
+        blog = ''
+        url = ''
+        twitter = ''
 
-    for i,item in enumerate(urlobj):
-        text = item.text
-        href = item.attrs['href']
+        for i,item in enumerate(urlobj):
+            text = item.text
+            href = item.attrs['href']
 
-        if re.match(r"http", text):
-            url = href
-        if re.match(r"Fees", text):
-            fees = href
-        if re.match(r"Chat", text):
-            chat = href
-        if re.match(r"Blog", text):
-            blog = href  
-        if re.match(r"@", text):
-            twitter = href   
+            if re.match(r"http", text):
+                url = href
+            if re.match(r"Fees", text):
+                fees = href
+            if re.match(r"Chat", text):
+                chat = href
+            if re.match(r"Blog", text):
+                blog = href  
+            if re.match(r"@", text):
+                twitter = href   
 
-    updatedAt = datetime.datetime.now()
+        updatedAt = datetime.datetime.now()
 
-    query = (ExchangeInfo
-             .update(rank=index+1,timestamp=updatedAt,alive=True)
-             .where(ExchangeInfo.name == name))
-    rows =  query.execute()    
-    if rows == 0:
-        print 'new Exchange: ' + name     
-        exchangeinfo = ExchangeInfo(rank=index+1,name=name,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
-        exchangeinfo.save()   
+        query = (ExchangeInfo
+                .update(rank=index+1,timestamp=updatedAt,alive=True)
+                .where(ExchangeInfo.name == name))
+        rows =  query.execute()    
+        if rows == 0:
+            print 'new Exchange: ' + name     
+            exchangeinfo = ExchangeInfo(rank=index+1,name=name,nick=nick,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
+            exchangeinfo.save()   
 
 
 thistime = datetime.datetime.now()
