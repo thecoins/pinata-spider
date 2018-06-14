@@ -85,7 +85,7 @@ for index,item in enumerate(tr):
         rows =  query.execute()    
         if rows == 0:
             print 'new Exchange: ' + name     
-            exchangeinfo = ExchangeInfo(rank=index+1,name=name,nick=nick,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
+            exchangeinfo = ExchangeInfo(rank=rank,name=name,nick=nick,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
             exchangeinfo.save()   
 
 
