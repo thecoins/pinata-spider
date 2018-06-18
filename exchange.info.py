@@ -109,11 +109,11 @@ for index,item in enumerate(tr):
         volume12 = []
         query12 = Exchange.select(Exchange.volume).where(Exchange.name == nick).order_by(Exchange.timestamp.desc()).limit(144).dicts()
         for item12 in query12:
-          volume12.append(float(str(item12['volume'])))
+          volume12.insert(0,float(str(item12['volume'])))
         volume24 = []
         query24 = Exchange.select(Exchange.volume).where(Exchange.name == nick).order_by(Exchange.timestamp.desc()).limit(288).dicts()
         for item24 in query24:
-          volume24.append(float(str(item24['volume'])))
+          volume24.insert(0,float(str(item24['volume'])))
         
         queryVolume = (ExchangeVolume
                 .update(volume12=volume12,volume24=volume24,timestamp=updatedAt)
