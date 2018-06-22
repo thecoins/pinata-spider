@@ -10,7 +10,7 @@ from peewee import *
 db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', database = 'coinmarketcap')
 
 class CoinInfo(Model):
-    rank = IntegerField()
+    # rank = IntegerField()
     name = CharField()
     url = CharField()
     announcement = CharField()
@@ -88,7 +88,7 @@ for index,item in enumerate(html):
             print text
             print href             
     
-    coininfo = CoinInfo(rank=index+1,name=name,url=url,announcement=announcement,explorer=explorer,explorer2=explorer2,explorer3=explorer3,chat=chat,chat2=chat2,message=message,github=github)
+    coininfo = CoinInfo(name=name,url=url,announcement=announcement,explorer=explorer,explorer2=explorer2,explorer3=explorer3,chat=chat,chat2=chat2,message=message,github=github)
     coininfo.save()
 
 db.close()
