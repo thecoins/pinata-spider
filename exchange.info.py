@@ -11,7 +11,7 @@ db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', databas
 
 # Exchange basic info
 class ExchangeInfo(Model):
-    rank = IntegerField()
+    # rank = IntegerField()
     name = CharField()
     nick = CharField()
     url = CharField()
@@ -38,14 +38,14 @@ soup = bs4.BeautifulSoup(response.text,"html.parser")
 
 # html = soup.select('.volume-header a')
 tr = soup.select('.table tr')
-rank = 0
+# rank = 0
 # for index,item in enumerate(html):
 for index,item in enumerate(tr):
 
     if (item.has_attr('id')):
         nick = item.attrs['id']
         # print nick
-        rank = rank + 1
+        # rank = rank + 1
         # exchange page
         link = "https://coinmarketcap.com/exchanges/" + nick
         time.sleep(3)
@@ -83,14 +83,14 @@ for index,item in enumerate(tr):
         updatedAt = datetime.datetime.now()
         
         # Update Exchange Rank
-        queryExchange = (ExchangeInfo
-                .update(rank=rank,timestamp=updatedAt,alive=True)
-                .where(ExchangeInfo.name == name))
-        rows =  queryExchange.execute()    
-        if rows == 0:
-            print 'new Exchange: ' + name     
-            exchangeinfo = ExchangeInfo(rank=rank,name=name,nick=nick,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
-            exchangeinfo.save()      
+        # queryExchange = (ExchangeInfo
+        #         .update(rank=rank,timestamp=updatedAt,alive=True)
+        #         .where(ExchangeInfo.name == name))
+        # rows =  queryExchange.execute()    
+        # if rows == 0:
+        #     print 'new Exchange: ' + name     
+        exchangeinfo = ExchangeInfo(name=name,nick=nick,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
+        exchangeinfo.save()      
         
 db.close()
 
