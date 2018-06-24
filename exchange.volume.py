@@ -51,7 +51,7 @@ for exchange in queryname:
     # Query volume from Exchange to ExchangeVolume
     volume = []
     queryexchange = Exchange.select(Exchange.volume,Exchange.rank).where(Exchange.name == name).order_by(Exchange.timestamp.desc()).limit(144).dicts()
-    last = queryexchange[-1]
+    last = queryexchange[len(queryexchange) -1]
     lastrank = last['rank']
     lastvolume = float(str(last['volume']))
     for item in queryexchange:
