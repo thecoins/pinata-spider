@@ -12,7 +12,7 @@ db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', databas
 # Exchange basic info
 class ExchangeInfo(Model):
     # rank = IntegerField()
-    name = CharField()
+    firstname = CharField()
     nick = CharField()
     url = CharField()
     fees = CharField()
@@ -89,7 +89,7 @@ for index,item in enumerate(tr):
         # rows =  queryExchange.execute()    
         # if rows == 0:
         #     print 'new Exchange: ' + name     
-        exchangeinfo = ExchangeInfo(name=name,nick=nick,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
+        exchangeinfo = ExchangeInfo(firstname=name,nick=nick,fees=fees,chat=chat,blog=blog,url=url,twitter=twitter)
         exchangeinfo.save()      
         
 db.close()
