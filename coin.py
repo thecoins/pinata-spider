@@ -3,8 +3,12 @@ import json
 import datetime
 import time
 from peewee import *
+import config
 
-db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', database = 'coinmarketcap')
+db = MySQLDatabase(host = config.DATABASE['dbhost'],
+                   user = config.DATABASE['dbuser'],
+                   password = config.DATABASE['dbpassword'],
+                   database = config.DATABASE['dbdatabase'])
 
 class Coin(Model):
     coin_id = CharField()

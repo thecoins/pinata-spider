@@ -3,8 +3,12 @@ from bs4 import BeautifulSoup
 import datetime
 import time
 from peewee import *
+import config
 
-db = MySQLDatabase(host = '127.0.0.1', user = 'root', passwd = '123456', database = 'coinmarketcap')
+db = MySQLDatabase(host = config.DATABASE['dbhost'],
+                   user = config.DATABASE['dbuser'],
+                   password = config.DATABASE['dbpassword'],
+                   database = config.DATABASE['dbdatabase'])
 
 class Exchange(Model):
     rank = IntegerField()
@@ -44,12 +48,13 @@ for index,item in enumerate(tr):
         if prevVolume == '?':
             prevVolume = '0'
         rank = rank + 1
-
+        print rank
         exchangedb = Exchange(rank=rank,name=prevName,volume=prevVolume)
         exchangedb.save()
-
+    
         prevName = item.attrs['id']
 
+        print prevName
     prevItem = item    
 
 db.close()
